@@ -1,20 +1,21 @@
-import {of} from "rxjs"
+import {of, from} from "rxjs"
 import {map, mergeMap, tap, filter} from "rxjs/operators"
 import "reading-time"
 import {clearNotification, createNotification, getBookmark, getFromStorage} from "../util/chromeApi";
 import {OptionsKey} from "../options/optionsData"
-const extractor = require("unfluff/lib/unfluff");
 
 const remindId = 'bm-remind-id';
+const articleParserUrl = 'https://article-reminder-parser.herokuapp.com/api/parse?url=';
 
-class BmData {
+class ParsedArticle {
     constructor(data) {
         data = data || {};
-        this.id = data['id'] || "";
-        this.title = data['title'] || "?";
-        this.dateAdded = data['dateAdded'] || 0;
-        this.url = data['url'] || "";
-        this.readTime = +data['readTime'] || 0;
+        this.authors = data['authors'] || [];
+        this.keywords = data['keywords'] || [];
+        this.publishDate = data['publish_date'] || "";
+        this.readTime = +data['read_time'] || 0;
+        this.summary = data['summary'] || "";
+        this.title = data['title'] || "";
     }
 }
 
@@ -22,8 +23,8 @@ class BmReminder {
     Remind() {
         this.GetRandomBookmark()
             .pipe(filter(bookmark => bookmark))
+            .pipe(mergeMap(b => this.ParseBookmark(b)))
             .pipe(mergeMap(b => this.ConstructBmData(b)))
-            .pipe(tap(b => this.GetReadTime(b)))
             .pipe(mergeMap(b => this.CreateNotification(b)))
             .subscribe();
     }
@@ -34,24 +35,25 @@ class BmReminder {
             .pipe(mergeMap(id => getBookmark(id)))
     }
 
-    ConstructBmData(rawData) {
-        return of(new BmData(rawData));
+    ParseBookmark(bookmark) {
+        console.log("Parsing bookmark with url: " + bookmark.url);
+        return from(
+            $.get(articleParserUrl + encodeURIComponent(bookmark.url))
+        );
     }
 
-    GetReadTime(bmData) {
-        console.log(bmData.url);
-        let data = extractor(bmData.url);
-        console.log(data);
+    ConstructBmData(data) {
+        return of(new ParsedArticle(data));
     }
 
-    CreateNotification(bmData) {
+    CreateNotification(article) {
         chrome.browserAction.setBadgeText({text: "1"});
         let notificationData = {
             type: 'basic',
             iconUrl: 'icon-128.png',
             title: 'Bookmark Reminder',
-            message: "Average read time: " + bmData.readTime,
-            contextMessage: bmData.title,
+            message: "Average read time: " + Math.ceil(article.readTime / 60) + " mins",
+            contextMessage: article.title,
             buttons: [{title: "Read Now"}]
         };
         return clearNotification(remindId)

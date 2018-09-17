@@ -25,7 +25,6 @@
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.0",
     "tree-multiselect": "^2.5.2",
-    "unfluff": "^3.2.0",
     "webpack": "^4.17.2",
     "webpack-dev-server": "^3.1.8",
     "write-file-webpack-plugin": "^4.4.0"

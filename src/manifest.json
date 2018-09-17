@@ -4,7 +4,8 @@
     "bookmarks",
     "storage",
     "notifications",
-    "alarms"
+    "alarms",
+    "*://article-reminder-parser.herokuapp.com/*"
   ],
   "options_page": "options.html",
   "background": {

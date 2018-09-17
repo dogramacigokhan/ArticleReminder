@@ -1,0 +1,33 @@
+{
+  "name": "article-reminder",
+  "version": "0.0.1",
+  "description": "Reminder plugin for your forgotten bookmarks",
+  "scripts": {
+    "build": "node utils/build.js",
+    "start": "node utils/webserver.js"
+  },
+  "devDependencies": {
+    "bootstrap": "^4.1.3",
+    "clean-webpack-plugin": "^0.1.19",
+    "copy-webpack-plugin": "^4.5.2",
+    "css-loader": "^1.0.0",
+    "file-loader": "^2.0.0",
+    "fs-extra": "^7.0.0",
+    "html-loader": "^0.5.5",
+    "html-webpack-plugin": "^3.2.0",
+    "jquery": "^3.3.1",
+    "node-sass": "^4.9.3",
+    "popper.js": "^1.14.4",
+    "raw-loader": "^0.5.1",
+    "reading-time": "^1.1.3",
+    "rxjs": "^6.3.2",
+    "rxjs-compat": "^6.3.2",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.23.0",
+    "tree-multiselect": "^2.5.2",
+    "unfluff": "^3.2.0",
+    "webpack": "^4.17.2",
+    "webpack-dev-server": "^3.1.8",
+    "write-file-webpack-plugin": "^4.4.0"
+  }
+}

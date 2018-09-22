@@ -2,6 +2,7 @@ import {Observable} from 'rxjs/Observable'
 
 function processChromeResult(observer, result) {
     if (chrome.runtime.lastError) {
+        console.error("Chrome error", chrome.runtime.lastError);
         observer.error(chrome.runtime.lastError);
     }
     else {
@@ -39,6 +40,12 @@ export function getBookmarksTree() {
 export function getBookmark(id) {
     return Observable.create(observer => {
         chrome.bookmarks.get('' + id, bookmark => processChromeResult(observer, bookmark ? bookmark[0] : bookmark));
+    });
+}
+
+export function searchBookmark(query) {
+    return Observable.create(observer => {
+        chrome.bookmarks.search(query, result => processChromeResult(observer, result));
     });
 }
 

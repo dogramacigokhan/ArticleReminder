@@ -2,46 +2,46 @@ import "bootstrap/dist/css/bootstrap.css"
 import "../sass/tree-multiselect.scss"
 import "../sass/options.scss";
 
-import {of, fromEvent} from 'rxjs'
-import {mergeMap, tap} from "rxjs/operators";
 import "jquery"
 import "bootstrap"
 import "tree-multiselect"
+import {of, fromEvent} from 'rxjs'
+import {mergeMap, tap} from "rxjs/operators";
 import {scheduler} from "./reminder/scheduler"
-import {OptionsKey, OptionsData} from "./options/optionsData"
-import {setStorage, getBookmarksTree, getFromStorage, clearStorage} from "./util/chromeApi";
+import {OptionsData} from "./options/optionsData"
+import {getBookmarksTree, clearStorage} from "./util/chromeApi";
 
 class Options {
     Init() {
-        getFromStorage(OptionsKey)
-            .pipe(tap(data => this.SyncData(data)))
+        OptionsData.GetFromStorage()
+            .pipe(tap(data => this.data = data))
+            .pipe(tap(() => this._syncForm()))
             .pipe(mergeMap(() => getBookmarksTree()))
-            .pipe(mergeMap(bookmarks => this.CreateBookmarkTree(bookmarks)))
-            .pipe(tap(tree => this.ShowBookmarkTree(tree)))
-            .subscribe(() => this.ListenButtons());
+            .pipe(mergeMap(bookmarks => this._createBookmarkTree(bookmarks)))
+            .pipe(tap(tree => this._showBookmarkTree(tree)))
+            .subscribe(() => this._listenButtons());
     }
 
-    SyncData(data) {
-        this.data = new OptionsData(data[OptionsKey]);
+    _syncForm() {
         $('#remind-days').val(this.data.remindDays);
         $('#remind-frequency').val(this.data.remindFrequency);
     }
 
-    CreateBookmarkTree(bookmarkTree) {
+    _createBookmarkTree(bookmarkTree) {
         let rootBookmark = bookmarkTree[0];
         rootBookmark.title = 'Bookmarks';
 
         let tree = $("#bookmarks");
         rootBookmark.children.forEach(bookmark => {
-            this.AddBookmarksRecursively(tree, bookmark, "Bookmarks")
+            this._addBookmarksRecursively(tree, bookmark, "Bookmarks")
         });
         return of(tree);
     }
 
-    AddBookmarksRecursively(tree, bookmark, section = "") {
+    _addBookmarksRecursively(tree, bookmark, section = "") {
         if (bookmark.children) {
             section += "/" + bookmark.title;
-            bookmark.children.forEach(child => this.AddBookmarksRecursively(tree, child, section));
+            bookmark.children.forEach(child => this._addBookmarksRecursively(tree, child, section));
         }
         else if (bookmark.title) {
             let el = $('<option></option>');
@@ -57,39 +57,38 @@ class Options {
         }
     }
 
-    ShowBookmarkTree(tree) {
+    _showBookmarkTree(tree) {
         tree.treeMultiselect({
             hideSidePanel: true,
             startCollapsed: true,
-            onChange: (all) => this.OnBmTreeChanged(all)
+            onChange: (all) => this._onBmTreeChanged(all)
         });
     }
 
-    OnBmTreeChanged(allSelectedItems) {
+    _onBmTreeChanged(allSelectedItems) {
         this.data.selectedBookmarkIds = allSelectedItems.map(i => +i.value);
     }
 
-    ListenButtons() {
+    _listenButtons() {
         fromEvent($('#btn-save'), 'click')
-            .pipe(mergeMap(() => this.UpdateData()))
-            .pipe(mergeMap(data => setStorage({[OptionsKey]: data})))
-            .pipe(tap(data => scheduler.ScheduleReminder(data)))
-            .subscribe(() => Options.ShowInfoText(true, 'Saved changes.'),
-                err => Options.ShowInfoText(false, 'Unable to save changes!', err));
+            .pipe(tap(() => this._updateData()))
+            .pipe(mergeMap(() => this.data.SaveToStorage()))
+            .pipe(mergeMap(() => scheduler.ScheduleReminder()))
+            .subscribe(() => this._showInfoText(true, 'Saved changes.'),
+                err => this._showInfoText(false, 'Unable to save changes!', err));
 
         fromEvent($('#btn-reset'), 'click')
             .pipe(mergeMap(() => clearStorage()))
             .subscribe(() => window.location.reload(true),
-                err => Options.ShowInfoText(false, 'Unable to reset settings!', err));
+                err => this._showInfoText(false, 'Unable to reset settings!', err));
     }
 
-    UpdateData() {
+    _updateData() {
         this.data.remindDays = $('#remind-days').val();
         this.data.remindFrequency = $('#remind-frequency').val();
-        return of(this.data)
     }
 
-    static ShowInfoText(success, message, log) {
+    _showInfoText(success, message, log) {
         let id = success ? 'success-alert' : 'failed-alert';
         $(`#${id}`).text(message).stop(true).fadeIn('fast').delay(3000).fadeOut();
         console.log(log || message);

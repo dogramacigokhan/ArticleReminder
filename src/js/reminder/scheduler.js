@@ -1,38 +1,42 @@
-import {reminder} from "./bmReminder";
+import {tap} from "rxjs/operators";
+import {notifier} from "./notifier";
+import {OptionsData} from "../options/optionsData";
 
-const alarmKey = 'bm-alarm';
+const alarmKey = 'article-alarm';
 
 class Scheduler {
-    ScheduleReminder(options) {
-        this.StartListeningAlarm();
-        this.CreateAlarm(options);
+    ScheduleReminder() {
+        return OptionsData.GetFromStorage()
+            .pipe(tap(() => this.StartListeningAlarm()))
+            .pipe(tap(o => this.CreateAlarm(o)));
+    }
+
+    StartListeningAlarm() {
+        chrome.alarms.onAlarm.removeListener(this._onNotifyAlarm);
+        chrome.alarms.onAlarm.addListener(alarm => this._onNotifyAlarm(alarm));
     }
 
     CreateAlarm(options) {
         chrome.alarms.create(alarmKey, {
-            when: this.GetFirstAlarmDate(options),
-            periodInMinutes: this.GetPeriod(options)
+            when: this._getFirstAlarmDate(options),
+            periodInMinutes: this._getPeriod(options)
         });
     }
 
-    GetFirstAlarmDate(options) {
+    _getFirstAlarmDate(options) {
+        // TODO
         return Date.now() + 1;
     }
 
-    GetPeriod(options) {
+    _getPeriod(options) {
+        // TODO
     }
 
-    // TODO: Move this to background.js
-    StartListeningAlarm() {
-        chrome.alarms.onAlarm.removeListener(this.OnAlarm);
-        chrome.alarms.onAlarm.addListener(alarm => this.OnAlarm(alarm));
-    }
-
-    OnAlarm(alarm) {
+    _onNotifyAlarm(alarm) {
         if (!alarm || alarm.name !== alarmKey) {
             return;
         }
-        reminder.Remind();
+        notifier.NotifyUser();
     }
 }
 

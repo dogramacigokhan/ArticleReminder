@@ -7,9 +7,8 @@ import {Article} from "../article";
 
 export class BookmarkSource {
     GetArticle() {
-        return this._getRandomArticle();
-        // return Article.GetFromStorage()
-        //     .pipe(mergeMap(a => a ? of(a) : this._getRandomArticle()))
+        return Article.GetFromStorage()
+            .pipe(mergeMap(a => a ? of(a) : this._getRandomArticle()))
     }
 
     _getRandomArticle() {

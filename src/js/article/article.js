@@ -9,7 +9,7 @@ export class Article {
         this.authors = article['authors'] || [];
         this.keywords = article['keywords'] || [];
         this.publishDate = article['publish_date'] || "";
-        this.readTime = article['read_time'] || 0;
+        this.readTime = +article['read_time'] || 0;
         this.summary = article['summary'] || "";
         this.title = article['title'] || "";
         this.sourceInfo = article['sourceInfo'] || {};

@@ -1,11 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title></title>
+    <meta charset="UTF-8">
+    <title></title>
 </head>
 <body>
-  <h1>Hello!</h1>
-  <img src="img/icon-128.png">
+<h1>Article Reminder</h1>
+<h3 id="article-title"></h3>
+<div class="loading">
+    <span>Loading...</span>
+</div>
+<div class="article-info" style="display: none;">
+    <p id="read-time" style="display: none;">Read Time: <span id="read-time-value"></span></p>
+    <p id="publish-date" style="display: none;">Publish Date: <span id="publish-date-value"></span></p>
+    <p id="summary" style="display: none;">Summary: <span id="summary-value"></span></p>
+    <p id="path">Found In: <span id="path-value"></span></p>
+    <a id="url" target="_blank"></a>
+</div>
 </body>
 </html>

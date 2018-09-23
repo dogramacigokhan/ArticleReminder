@@ -24,7 +24,7 @@ class Scheduler {
 
     _getFirstAlarmDate(options) {
         // TODO
-        return Date.now() + 1;
+        return Date.now() + 60000;
     }
 
     _getPeriod(options) {

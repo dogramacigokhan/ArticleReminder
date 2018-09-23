@@ -11,6 +11,7 @@ import {scheduler} from "./reminder/scheduler"
 import {OptionsData} from "./options/optionsData"
 import {getBookmarksTree, clearStorage} from "./util/chromeApi";
 
+// TODO: Show article sources in options
 class Options {
     Init() {
         OptionsData.GetFromStorage()

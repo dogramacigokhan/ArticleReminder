@@ -65,7 +65,17 @@ function _addToDictRecursively(dict, bookmark) {
     if (bookmark.children) {
         bookmark.children.forEach(c => _addToDictRecursively(dict, c));
     }
-    dict[bookmark.id] = bookmark;
+    dict[bookmark.id] = _bmTreeNodeToDictEl(bookmark);
+}
+
+function _bmTreeNodeToDictEl(bookmark) {
+    return {
+        id: bookmark.id,
+        parentId: bookmark.parentId,
+        url: bookmark.url,
+        title: bookmark.title,
+        dateAdded: bookmark.dateAdded
+    }
 }
 
 // Alarms

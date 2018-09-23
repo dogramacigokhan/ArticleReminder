@@ -16,7 +16,7 @@ class Notifier {
         chrome.browserAction.setBadgeText({text: "1"});
 
         let readTime = article.readTime ? Math.ceil(article.readTime / 60) + " mins" : "";
-        let message = readTime ? "Average read time: " + readTime : "";
+        let message = readTime ? "Read Time: " + readTime : "";
 
         let notificationData = {
             type: 'basic',

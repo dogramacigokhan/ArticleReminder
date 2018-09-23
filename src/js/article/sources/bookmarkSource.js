@@ -7,8 +7,9 @@ import {Article} from "../article";
 
 export class BookmarkSource {
     GetArticle() {
-        return Article.GetFromStorage()
-            .pipe(mergeMap(a => a ? of(a) : this._getRandomArticle()))
+        return this._getRandomArticle();
+        // return Article.GetFromStorage()
+        //     .pipe(mergeMap(a => a ? of(a) : this._getRandomArticle()))
     }
 
     _getRandomArticle() {
@@ -45,8 +46,8 @@ export class BookmarkSource {
     }
 
     _getBmPathRecursively(bookmarksDict, bookmark, path = []) {
-        path = path.splice(0, 0, bookmark.title);
-        if (bookmark.parentId) {
+        path.splice(0, 0, bookmark.title);
+        if (+bookmark.parentId) {
             return this._getBmPathRecursively(bookmarksDict, bookmarksDict[bookmark.parentId], path);
         }
         return path;

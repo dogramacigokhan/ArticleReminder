@@ -1,13 +1,13 @@
-import {mergeMap} from "rxjs/operators";
+import {mergeMap, tap} from "rxjs/operators";
 import {clearNotification, createNotification} from "../util/chromeApi";
 import {articleManager} from "../article/articleManager";
-
-const notificationId = 'ar-notification';
+import {notificationKey} from "../util/constants";
 
 class Notifier {
     NotifyUser() {
         articleManager.GetRandomSource()
             .pipe(mergeMap(s => s.GetArticle()))
+            .pipe(tap(console.log))
             .pipe(mergeMap(a => this._createNotification(a)))
             .subscribe();
     }
@@ -26,8 +26,8 @@ class Notifier {
             contextMessage: article.title,
             buttons: [{title: "Read Now"}]
         };
-        return clearNotification(notificationId)
-            .pipe(mergeMap(() => createNotification(notificationId, notificationData)));
+        return clearNotification(notificationKey)
+            .pipe(mergeMap(() => createNotification(notificationKey, notificationData)));
     }
 }
 

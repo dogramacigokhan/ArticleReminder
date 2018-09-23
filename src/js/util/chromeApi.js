@@ -1,4 +1,5 @@
-import {Observable} from 'rxjs/Observable'
+import {Observable} from 'rxjs'
+import {map} from 'rxjs/operators'
 
 function processChromeResult(observer, result) {
     if (chrome.runtime.lastError) {
@@ -37,6 +38,11 @@ export function getBookmarksTree() {
     });
 }
 
+export function getBookmarksDict() {
+    return getBookmarksTree()
+        .pipe(map(trees => _convertToDict(trees)));
+}
+
 export function getBookmark(id) {
     return Observable.create(observer => {
         chrome.bookmarks.get('' + id, bookmark => processChromeResult(observer, bookmark ? bookmark[0] : bookmark));
@@ -47,6 +53,19 @@ export function searchBookmark(query) {
     return Observable.create(observer => {
         chrome.bookmarks.search(query, result => processChromeResult(observer, result));
     });
+}
+
+function _convertToDict(bmTrees) {
+    let dict = {};
+    bmTrees.forEach(tree => _addToDictRecursively(dict, tree));
+    return dict;
+}
+
+function _addToDictRecursively(dict, bookmark) {
+    if (bookmark.children) {
+        bookmark.children.forEach(c => _addToDictRecursively(dict, c));
+    }
+    dict[bookmark.id] = bookmark;
 }
 
 // Alarms

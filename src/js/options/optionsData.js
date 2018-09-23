@@ -2,8 +2,7 @@ import {of} from "rxjs"
 import {map, mergeMap, tap} from "rxjs/operators";
 import {getBookmarksTree, getFromStorage, setStorage} from "../util/chromeApi";
 import {DefaultArticleSources} from "../article/articleManager";
-
-const OptionsStorageKey = 'ar-options';
+import {optionsStorageKey} from "../util/constants";
 
 export class OptionsData {
 
@@ -16,12 +15,12 @@ export class OptionsData {
     }
 
     SaveToStorage() {
-        return setStorage({[OptionsStorageKey]: this});
+        return setStorage({[optionsStorageKey]: this});
     }
 
     static GetFromStorage() {
-        return getFromStorage(OptionsStorageKey)
-            .pipe(map(d => d[OptionsStorageKey]))
+        return getFromStorage(optionsStorageKey)
+            .pipe(map(d => d[optionsStorageKey]))
             .pipe(mergeMap(d => d ? of(new OptionsData(d)) : OptionsData._getDefault()));
     }
 

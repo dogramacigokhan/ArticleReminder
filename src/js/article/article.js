@@ -1,7 +1,6 @@
 import {getFromStorage, setStorage} from "../util/chromeApi";
 import {map, tap} from "rxjs/operators";
-
-const articleStorageKey = 'ar-article';
+import {articleStorageKey} from "../util/constants";
 
 export class Article {
     constructor(article) {
@@ -12,7 +11,8 @@ export class Article {
         this.publishDate = article['publish_date'] || "";
         this.readTime = article['read_time'] || 0;
         this.summary = article['summary'] || "";
-        this.title = article['title'];
+        this.title = article['title'] || "";
+        this.sourceInfo = article['sourceInfo'] || {};
     }
 
     SaveToStorage() {

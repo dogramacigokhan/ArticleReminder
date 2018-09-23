@@ -1,8 +1,7 @@
 import {tap} from "rxjs/operators";
 import {notifier} from "./notifier";
 import {OptionsData} from "../options/optionsData";
-
-const alarmKey = 'article-alarm';
+import {alarmKey} from "../util/constants";
 
 class Scheduler {
     ScheduleReminder() {

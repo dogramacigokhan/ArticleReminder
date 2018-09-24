@@ -6,9 +6,14 @@ import {articleParserUrl} from "../../util/constants";
 import {Article} from "../article";
 
 export class BookmarkSource {
-    GetArticle() {
-        return Article.GetFromStorage()
-            .pipe(mergeMap(a => a ? of(a) : this._getRandomArticle()))
+    GetArticle(useStorage = true) {
+        if (useStorage) {
+            return Article.GetFromStorage()
+                .pipe(mergeMap(a => a ? of(a) : this._getRandomArticle()))
+        }
+        else {
+            return this._getRandomArticle();
+        }
     }
 
     _getRandomArticle() {

@@ -6,16 +6,27 @@
 </head>
 <body>
 <h1>Article Reminder</h1>
-<h3 id="article-title"></h3>
 <div class="loading">
-    <span>Loading...</span>
+    <div class="spinner">
+        <div class="rect1"></div>
+        <div class="rect2"></div>
+        <div class="rect3"></div>
+        <div class="rect4"></div>
+        <div class="rect5"></div>
+    </div>
 </div>
 <div class="article-info" style="display: none;">
-    <p id="read-time" style="display: none;">Read Time: <span id="read-time-value"></span></p>
-    <p id="publish-date" style="display: none;">Publish Date: <span id="publish-date-value"></span></p>
-    <p id="summary" style="display: none;">Summary: <span id="summary-value"></span></p>
-    <p id="path">Found In: <span id="path-value"></span></p>
-    <a id="url" target="_blank"></a>
+    <div class="breadcrumb"></div>
+    <h3 id="article-title"></h3>
+    <p id="read-time" style="display: none;"><b>Read Time:</b> <span id="read-time-value"></span></p>
+    <p id="publish-date" style="display: none;"><b>Publish Date:</b> <span id="publish-date-value"></span></p>
+    <p id="summary" style="display: none;"><b>Summary:</b> <span id="summary-value"></span></p>
+    <a id="url" target="_blank" class="article-button">Read Now</a>
+    <a class="article-button recommend-another">Recommend Another</a>
+</div>
+<div class="article-error" style="display: none;">
+    <p>Oops, an error occurred!</p>
+    <a class="article-button recommend-another">Recommend Another</a>
 </div>
 </body>
 </html>

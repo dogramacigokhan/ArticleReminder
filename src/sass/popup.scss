@@ -1,4 +1,47 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  min-height: auto;
+  height: auto;
+}
+
 body {
+  text-align: center;
+  padding: 20px;
   width: 400px;
-  height: 400px;
+  background: #c3dad9;
+  background: linear-gradient(#c3dad9, #b7cfce);
+  font-family: arial, verdana, serif;
+}
+
+.article-info {
+  padding: 10px 0;
+
+  h3 {
+    padding-top: 10px;
+  }
+}
+
+.article-error {
+  padding: 10px 0;
+}
+
+p {
+  padding: 5px 0;
+}
+
+.article-button {
+  text-decoration: none;
+  outline: none;
+  display: inline-block;
+  font-size: 12px;
+  line-height: 26px;
+  background: white;
+  color: black;
+  border-radius: 5px;
+  padding: 0 10px;
+  margin: 0 5px;
 }

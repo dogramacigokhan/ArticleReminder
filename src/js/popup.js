@@ -1,11 +1,13 @@
+import "bootstrap/dist/css/bootstrap.css"
 import "../sass/breadcrumb.scss";
 import "../sass/spinner.scss";
 import "../sass/popup.scss";
 
+import "bootstrap"
 import {fromEvent} from "rxjs"
 import {catchError, mergeMap, tap} from "rxjs/operators";
 import {articleManager} from "./article/articleManager";
-
+import {truncateWords} from "./util/stringUtil";
 
 class Popup {
     Init() {
@@ -27,6 +29,9 @@ class Popup {
     }
 
     _showArticle(article) {
+        if (article.topImage) {
+            $('.article-image img').attr('src', article.topImage);
+        }
         if (article.readTime) {
             let readTime = Math.ceil(article.readTime / 60) + " minutes";
             $('#read-time-value').text(readTime);
@@ -37,15 +42,16 @@ class Popup {
             $('#publish-date').show();
         }
         if (article.summary) {
+            article.summary = truncateWords(article.summary, 40);
             $('#summary-value').text(article.summary);
             $('#summary').show();
         }
         $('#article-title').text(article.title);
-        $('#url').attr('href', article.url);
+        $('.read-now').attr('href', article.url);
 
-        $('.breadcrumb').empty();
+        $('.custom-breadcrumb').empty();
         article.sourceInfo.path.slice(0, -1).forEach(p => {
-            $('.breadcrumb').append($('<a href="#"></a>').text(p))
+            $('.custom-breadcrumb').append($('<a href="#"></a>').text(p))
         });
 
         $('.loading').hide();

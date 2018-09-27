@@ -5,14 +5,15 @@ import {articleStorageKey} from "../util/constants";
 export class Article {
     constructor(article) {
         article = article || {};
-        this.url = article['url'] || "";
         this.authors = article['authors'] || [];
         this.keywords = article['keywords'] || [];
         this.publishDate = article['publish_date'] || "";
         this.readTime = +article['read_time'] || 0;
+        this.sourceInfo = article['sourceInfo'] || {};
         this.summary = article['summary'] || "";
         this.title = article['title'] || "";
-        this.sourceInfo = article['sourceInfo'] || {};
+        this.topImage = article['top_image'] || "";
+        this.url = article['url'] || "";
     }
 
     SaveToStorage() {

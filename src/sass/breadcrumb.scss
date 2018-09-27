@@ -1,4 +1,4 @@
-.breadcrumb {
+.custom-breadcrumb {
   /*centering*/
   display: inline-block;
   box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.35);
@@ -8,7 +8,7 @@
   counter-reset: flag;
 }
 
-.breadcrumb a {
+.custom-breadcrumb a {
   text-decoration: none;
   outline: none;
   display: block;
@@ -23,14 +23,14 @@
   position: relative;
 }
 /*since the first link does not have a triangle before it we can reduce the left padding to make it look consistent with other links*/
-.breadcrumb a:first-child {
+.custom-breadcrumb a:first-child {
   padding-left: 20px;
   border-radius: 5px 0 0 5px; /*to match with the parent's radius*/
 }
-.breadcrumb a:first-child:before {
+.custom-breadcrumb a:first-child:before {
   left: 14px;
 }
-.breadcrumb a:last-child {
+.custom-breadcrumb a:last-child {
   border-radius: 0 5px 5px 0; /*this was to prevent glitches on hover*/
   padding-right: 20px;
 }
@@ -46,7 +46,7 @@
 //}
 
 /*adding the arrows for the breadcrumbs using rotated pseudo elements*/
-.breadcrumb a:after {
+.custom-breadcrumb a:after {
   content: '';
   position: absolute;
   top: 0;
@@ -65,7 +65,7 @@
   background: linear-gradient(135deg, #666, #333);
   /*stylish arrow design using box shadow*/
   box-shadow:
-          2px -2px 0 2px rgba(0, 0, 0, 0.4),
+          2px -2px 0 2px rgba(144, 144, 144, 0.4),
           3px -3px 0 2px rgba(255, 255, 255, 0.1);
   /*
       5px - for rounded arrows and
@@ -73,7 +73,7 @@
   border-radius: 0 5px 0 50px;
 }
 /*we dont need an arrow after the last link*/
-.breadcrumb a:last-child:after {
+.custom-breadcrumb a:last-child:after {
   content: none;
 }
 /*we will use the :before element to show numbers*/

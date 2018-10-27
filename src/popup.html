@@ -5,7 +5,7 @@
     <title></title>
 </head>
 <body>
-<div class="container-fluid bg-light">
+<div class="container-fluid">
     <div class="loading">
         <div class="spinner">
             <div class="rect1"></div>
@@ -20,24 +20,25 @@
             <img src=""/>
         </div>
         <div class="article-content">
-            <h5 id="article-title"></h5>
+            <h5 class="article-title"></h5>
             <div class="article-time small mb-3">
-                <p class="m-0 p-0" id="read-time" style="display: none;"><b>Read Time:</b> <span id="read-time-value"></span></p>
-                <p class="m-0 p-0" id="publish-date" style="display: none;"><b>Publish Date:</b> <span id="publish-date-value"></span></p>
+                <p class="m-0 p-0 read-time" style="display: none;"><b>Read Time:</b> <span class="read-time-value"></span></p>
+                <p class="m-0 p-0 publish-date" style="display: none;"><b>Publish Date:</b> <span class="publish-date-value"></span></p>
             </div>
             <div class="custom-breadcrumb flat"></div>
-            <blockquote class="blockquote" id="summary" style="display: none">
-                <p class="mb-0" id="summary-value"></p>
+            <blockquote class="blockquote summary" style="display: none">
+                <p class="mb-0 summary-value"></p>
             </blockquote>
         </div>
-        <div class="btn-group d-flex" role="group">
+        <div class="btn-group d-flex mt-2" role="group">
             <button type="button" class="btn btn-secondary w-100 recommend-another">Show Another</button>
+            <!--<button type="button" class="btn btn-secondary w-100 recommend-another">Mark As Read</button>-->
             <a class="btn btn-primary w-100 read-now" href="#" target="_blank" role="button">Read Now</a>
         </div>
     </div>
     <div class="article-error" style="display: none;">
         <p>Oops, an error occurred!</p>
-        <button type="button" class="btn btn-secondary w-100 recommend-another">Show Another</button>
+        <button type="button" class="btn btn-primary recommend-another">Try Again</button>
     </div>
 </div>
 </body>

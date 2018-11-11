@@ -20,7 +20,6 @@ export class OptionsData {
 
     static GetFromStorage() {
         return getFromStorage(optionsStorageKey)
-            .pipe(map(d => d[optionsStorageKey]))
             .pipe(mergeMap(d => d ? of(new OptionsData(d)) : OptionsData._getDefault()));
     }
 

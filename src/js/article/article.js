@@ -1,6 +1,5 @@
-import {getFromStorage, setStorage} from "../util/chromeApi";
-import {map, tap} from "rxjs/operators";
-import {articleStorageKey} from "../util/constants";
+import {setStorage} from "../util/chromeApi";
+import {bookmarkArticleStorageKey} from "../util/constants";
 
 export class Article {
     constructor(article) {
@@ -9,7 +8,7 @@ export class Article {
         this.keywords = article['keywords'] || [];
         this.publishDate = article['publish_date'] || "";
         this.readTime = +article['read_time'] || 0;
-        this.sourceInfo = article['sourceInfo'] || {};
+        this.sourceInfo = article['sourceInfo'] || new ArticleSourceInfo();
         this.summary = article['summary'] || "";
         this.title = article['title'] || "";
         this.topImage = article['top_image'] || "";
@@ -17,12 +16,17 @@ export class Article {
     }
 
     SaveToStorage() {
-        return setStorage({[articleStorageKey]: this});
+        return setStorage({[bookmarkArticleStorageKey]: this});
     }
 
-    static GetFromStorage() {
-        return getFromStorage(articleStorageKey)
-            .pipe(map(d => d[articleStorageKey]))
-            .pipe(tap(a => console.log("Article in cache", a)));
+    SaveToStorageSync() {
+        this.SaveToStorage().subscribe();
+    }
+}
+
+export class ArticleSourceInfo {
+    constructor(name, path) {
+        this.name = name || "";
+        this.path = path || [];
     }
 }

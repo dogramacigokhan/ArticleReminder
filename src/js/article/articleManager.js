@@ -1,27 +1,32 @@
-import {map, tap} from "rxjs/operators"
+import {map} from "rxjs/operators"
 import {OptionsData} from "../options/optionsData";
-import {BookmarkSource} from "./sources/bookmarkSource";
+import {bookmarkSource} from "./sources/bookmarkSource";
 
 export const DefaultArticleSources = [
-    new BookmarkSource()
+    bookmarkSource
 ];
 
-class ArticleManager {
-    constructor() {
+class ArticleManager
+{
+    constructor()
+    {
         this.sources = DefaultArticleSources;
     }
 
-    GetRandomSource() {
+    GetRandomSource()
+    {
         return OptionsData.GetFromStorage()
             .pipe(map(o => this._selectRandomSourceId(o)))
             .pipe(map(id => this.GetSource(id)));
     }
 
-    GetSource(id) {
+    GetSource(id)
+    {
         return this.sources[id];
     }
 
-    _selectRandomSourceId(options) {
+    _selectRandomSourceId(options)
+    {
         let randomIndex = options.articleSources[Math.floor(Math.random() * options.articleSources.length)];
         return options.articleSources[randomIndex];
     }

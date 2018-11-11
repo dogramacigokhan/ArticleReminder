@@ -4,8 +4,8 @@
 - [ ] Typescript integration (?)
 - [ ] Proper page management system
 - [ ] Showing articles details before parsing it
--     [ ] Image placeholder
--     [ ] Text placeholders
+  - [ ] Image placeholder
+  - [ ] Text placeholders
 - [ ] Mark as read option and screens
 - [ ] Implementing alerts
 - [ ] Using Observable.fromCallback for chromeApi

@@ -5,7 +5,7 @@ import "../sass/options.scss";
 import "jquery"
 import "bootstrap"
 import "tree-multiselect"
-import {of, fromEvent} from 'rxjs'
+import {fromEvent} from 'rxjs'
 import {mergeMap, tap} from "rxjs/operators";
 import {scheduler} from "./reminder/scheduler"
 import {OptionsData} from "./options/optionsData"
@@ -14,17 +14,18 @@ import {getBookmarksTree, clearStorage} from "./util/chromeApi";
 class Options {
     Init() {
         OptionsData.GetFromStorage()
-            .pipe(tap(data => this.data = data))
-            .pipe(tap(() => this._syncForm()))
-            .pipe(mergeMap(() => getBookmarksTree()))
-            .pipe(mergeMap(bookmarks => this._createBookmarkTree(bookmarks)))
-            .pipe(tap(tree => this._showBookmarkTree(tree)))
-            .subscribe(() => this._listenButtons());
+            .subscribe(data => this._onOptionsUpdated(data));
+
+        this._listenButtons();
     }
 
-    _syncForm() {
-        $('#remind-days').val(this.data.remindDays);
-        $('#remind-frequency').val(this.data.remindFrequency);
+    _onOptionsUpdated(optionsData) {
+        this.data = optionsData;
+        this._updateForm();
+
+        getBookmarksTree()
+            .pipe(mergeMap(bookmarks => this._createBookmarkTree(bookmarks)))
+            .subscribe();
     }
 
     _createBookmarkTree(bookmarkTree) {
@@ -35,7 +36,8 @@ class Options {
         rootBookmark.children.forEach(bookmark => {
             this._addBookmarksRecursively(tree, bookmark, "Bookmarks")
         });
-        return of(tree);
+
+        this._showBookmarkTree(tree);
     }
 
     _addBookmarksRecursively(tree, bookmark, section = "") {
@@ -81,6 +83,11 @@ class Options {
             .pipe(mergeMap(() => clearStorage()))
             .subscribe(() => window.location.reload(true),
                 err => this._showInfoText(false, 'Unable to reset settings!', err));
+    }
+
+    _updateForm() {
+        $('#remind-days').val(this.data.remindDays);
+        $('#remind-frequency').val(this.data.remindFrequency);
     }
 
     _updateData() {

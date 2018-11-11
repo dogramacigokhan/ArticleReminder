@@ -1,6 +1,7 @@
 import {Observable} from 'rxjs'
 import {map} from 'rxjs/operators'
 
+// Todo: fromCallback
 function processChromeResult(observer, result) {
     if (chrome.runtime.lastError) {
         console.error("Chrome error", chrome.runtime.lastError);
@@ -21,8 +22,14 @@ export function setStorage(data) {
 
 export function getFromStorage(key) {
     return Observable.create(observer => {
-        chrome.storage.sync.get([key], data => processChromeResult(observer, data));
+        chrome.storage.sync.get([key], data => processChromeResult(observer, data[key]));
     });
+}
+
+export function removeFromStorage(key) {
+    return Observable.create(observer => {
+        chrome.storage.sync.remove([key], () => processChromeResult(observer));
+    })
 }
 
 export function clearStorage() {

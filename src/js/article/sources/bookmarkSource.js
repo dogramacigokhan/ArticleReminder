@@ -1,37 +1,58 @@
 import {from, of} from "rxjs"
-import {map, mergeMap, tap, filter} from "rxjs/operators"
-import {getBookmark, getBookmarksDict} from "../../util/chromeApi";
+import {map, mergeMap, filter, tap} from "rxjs/operators"
+import {getBookmark, getBookmarksDict, getFromStorage, removeFromStorage} from "../../util/chromeApi";
 import {OptionsData} from "../../options/optionsData";
-import {articleParserUrl} from "../../util/constants";
-import {Article} from "../article";
+import {articleParserUrl, bookmarkArticleStorageKey} from "../../util/constants";
+import {Article, ArticleSourceInfo} from "../article";
+import {mockArticle} from "../../test/mockArticle";
 
 export class BookmarkSource {
-    GetArticle(useStorage = true) {
-        if (useStorage) {
-            return Article.GetFromStorage()
-                .pipe(mergeMap(a => a ? of(a) : this._getRandomArticle()))
+    GetArticle() {
+        return getFromStorage(bookmarkArticleStorageKey)
+            .pipe(mergeMap(article => this._processArticleFromStorage(article)));
+    }
+
+    InvalidateCache() {
+        return removeFromStorage(bookmarkArticleStorageKey);
+    }
+
+    _processArticleFromStorage(article) {
+        if (article) {
+            console.log("Article found in cache", article);
+            return of(article);
         }
-        else {
-            return this._getRandomArticle();
-        }
+
+        console.log("Unable to get article from storage, getting random article.");
+        return this._getRandomArticle();
     }
 
     _getRandomArticle() {
+        if (!navigator.onLine) { // TODO: If not production env.
+            console.log("Offline mode, returning a mock article for testing purposes.")
+            return of(mockArticle.Get());
+        }
+
+        return this._getRandomBookmark()
+            .pipe(mergeMap(bm => this._parseArticleFromBookmark(bm)))
+            .pipe(tap(article => article.SaveToStorageSync()));
+    }
+
+    _getRandomBookmark() {
         return OptionsData.GetFromStorage()
             .pipe(filter(d => d.selectedBookmarkIds))
             .pipe(map(d => this._selectRandomBookmarkId(d)))
-            .pipe(mergeMap(id => getBookmark(id)))
-            .pipe(mergeMap(bm => this._parseArticleFrom(bm)))
-            .pipe(tap(article => article.SaveToStorage().subscribe()));
+            .pipe(mergeMap(id => getBookmark(id)));
     }
 
     _selectRandomBookmarkId(data) {
         return data.selectedBookmarkIds[Math.floor(Math.random() * data.selectedBookmarkIds.length)];
     }
 
-    _parseArticleFrom(bookmark) {
-        console.log("Parsing bookmark with url: " + bookmark.url);
-        return from($.get(articleParserUrl + encodeURIComponent(bookmark.url)))
+    _parseArticleFromBookmark(bookmark) {
+        let url = articleParserUrl + encodeURIComponent(bookmark.url);
+        console.log("Parsing bookmark: " + url);
+
+        return from($.get(url))
             .pipe(map(d => new Article(d)))
             .pipe(mergeMap(a => this._setSourceInfo(a, bookmark)));
     }
@@ -39,12 +60,9 @@ export class BookmarkSource {
     _setSourceInfo(article, bookmark) {
         return getBookmarksDict()
             .pipe(map(d => this._getBmPathRecursively(d, bookmark)))
-            .pipe(map(p => {
+            .pipe(map(path => {
                 article.title = article.title || bookmark.title;
-                article.sourceInfo = {
-                    name: "Bookmarks",
-                    path: p
-                };
+                article.sourceInfo = new ArticleSourceInfo("Bookmarks", path);
                 return article;
             }));
     }
@@ -57,3 +75,5 @@ export class BookmarkSource {
         return path;
     }
 }
+
+export let bookmarkSource = new BookmarkSource();
